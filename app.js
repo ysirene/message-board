@@ -1,5 +1,7 @@
 const express = require('express');
 
+const db = require(__dirname + '/model/db_connector')
+
 const app = express();
 const portNum = 5000;
 
@@ -15,7 +17,12 @@ app.get('/', (req, res) => {
 
 // 取得留言資料
 app.get('/api/message', (req, res) => {
-    
+    db.query("SELECT comment, image_url FROM post ORDER BY id DESC").then(
+        ([result, fileds]) => {
+            console.log(fileds)
+            res.json(result)
+        }
+    )
 });
 
 // 新增留言
