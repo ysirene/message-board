@@ -8,18 +8,13 @@
     </head>
     <body>
         <header class="title">發表一篇圖文</header>
-        <form id="newMessage">
+        <form onsubmit="addMessage(event)" id="newMessage">
             <label>文字內容 <input type="text" name="comment" placeholder="請輸入文字內容" required></label>
             <label>圖片檔案 <input type="file" accept="image/*" name="image" required></label>
             <input type="submit" value="送出">
         </form>
-        <hr>
-        <div>靜態版面</div>
-        <img src="https://picsum.photos/300/400">
-        <hr>
-        <div>靜態版面</div>
-        <img src="https://picsum.photos/300/400">
-        <hr>
+        <article id="message_board">
+        </article>
         <script type="text/javascript" src="homepage.js"></script>
     </body>
 </html>
