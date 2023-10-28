@@ -49,8 +49,8 @@ app.get('/api/message', async (req, res) => {
             console.error(error);
             return res.json({'error': true, 'message': 'Database error'})
         }else{
-            return res.json(results)
-        }
+            return res.json(results);
+        };
     });
 });
 
@@ -61,33 +61,39 @@ app.post('/api/message', upload.single('image'), async (req, res) => {
     if (!req.file || !req.body.comment) {
         return res.status(400).json({ 'error': true, message: 'Missing comment or image.' });
     };
+
     const imageFile = req.file;
     const comment = req.body.comment;
     const imageFileName = fileNameGenerator.generateFileName(imageFileExt)
     
-    // 上傳照片至S3
-    uploadResult = await s3FileUploader.uploadFileToS3(imageFileName, imageFile).then((data) => {
-        console.log(data);
-    }).catch((data) =>{
-        console.log(data);
+    try{
+        // 上傳照片至S3
+        const uploadResult = await s3FileUploader.uploadFileToS3(imageFileName, imageFile);
+        imageFile.buffer = null; // 將圖檔從緩存中釋放
+    }
+    catch(err){
+        imageFile.buffer = null; // 將圖檔從緩存中釋放
+        console.log('catch', err);
         return res.status(500).json({'error': true, 'message': 'Fail to upload file to S3.'});
-    });
-    imageFile.buffer = null; // 將圖檔從緩存中釋放
-    if(uploadResult.error){
-        return res.status(500).json(uploadResult);
-    };
+    }
     
     // 留言與圖檔名稱存入資料庫
-    const connection = await db.getConnection();
-    connection.query('INSERT INTO post(comment, image_name) VALUES(?, ?)', [comment, imageFileName], (error, results, fields) => {
-        connection.release();
-        if(error){
-            console.error(error);
-            return res.status(500).json({'error': true, 'message': 'Database error'})
-        }else{
-            return res.status(200).json({'ok': true})
-        };
-    });
+    try{
+        const connection = await db.getConnection();
+        connection.query('INSERT INTO post(comment, image_name) VALUES(?, ?)', [comment, imageFileName], (err, results, fields) => {
+            connection.release();
+            if(err){
+                console.error(err);
+                return res.status(500).json({'error': true, 'message': 'Database error'});
+            }else{
+                return res.status(200).json({'ok': true});
+            };
+        });
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({'error': true, 'message': 'Database error'});
+    };
 });
 
 // 錯誤頁面處理
