@@ -41,7 +41,7 @@ function addMessage(event){
             let img = document.createElement('img');
             let divider = document.createElement('hr');
             messageDiv.textContent = data[i]['comment'];
-            img.setAttribute('src', data[i]['image_url']);
+            img.setAttribute('src', data[i]['image_name']);
             sectionTag.appendChild(messageDiv);
             sectionTag.appendChild(img);
             messageBoardElem.appendChild(divider);
