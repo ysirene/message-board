@@ -62,7 +62,7 @@ app.post('/api/message', upload.single('image'), async (req, res) => {
         return res.status(400).json({ 'error': true, message: 'Missing comment or image.' });
     };
 
-    const imageFile = req.file;
+    const imageFile = req.file.buffer;
     const comment = req.body.comment;
     const imageFileName = fileNameGenerator.generateFileName(imageFileExt)
     
