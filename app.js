@@ -63,15 +63,18 @@ app.post('/api/message', upload.single('file'), async (req, res) => {
     };
     const imageFile = req.file;
     const comment = req.body.comment;
-    const imageFileName = fileNameGenerator.generateFileName(ext)
+    const imageFileName = fileNameGenerator.generateFileName(imageFileExt)
     
     // 上傳照片至S3
-    uploadResult = await s3FileUploader.uploadFileToS3(imageFile, imageFileName, ext)
+    uploadResult = await s3FileUploader.uploadFileToS3(imageFile, imageFileName, imageFileExt)
     imageFile.buffer = null; // 將圖檔從緩存中釋放
-
+    if(uploadResult.error){
+        return res.status(500).json(uploadResult);
+    };
+    
     // 留言與圖檔名稱存入資料庫
     const connection = await db.getConnection();
-    connection.query('INSERT INTO POST(comment, image_name) VALUES(?, ?)', [comment, imageFileName], (error, results, fields) => {
+    connection.query('INSERT INTO post(comment, image_name) VALUES(?, ?)', [comment, imageFileName], (error, results, fields) => {
         connection.release();
         if(error){
             console.error(error);
