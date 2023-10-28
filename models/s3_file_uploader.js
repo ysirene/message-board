@@ -19,9 +19,9 @@ function uploadFileToS3(file, fileName, ext){
         s3.upload(params, (err, data) => {
             if(err){
                 errorMessage = err + err.stack;
-                callback({'error': true, 'message': errorMessage});
+                reject({'error': true, 'message': errorMessage});
             }else{
-                callback({'ok': true});
+                resolve({'ok': true});
             };
         });
     })
