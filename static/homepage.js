@@ -41,12 +41,11 @@ function addMessage(event){
             let img = document.createElement('img');
             let divider = document.createElement('hr');
             messageDiv.textContent = data[i]['comment'];
-            img.setAttribute('src', data[i]['image_name']);
+            img.setAttribute('src', 'https://d2te9nmcgn9qhu.cloudfront.net/' + data[i]['image_name']);
             sectionTag.appendChild(messageDiv);
             sectionTag.appendChild(img);
             messageBoardElem.appendChild(divider);
             messageBoardElem.appendChild(sectionTag);
-        }
+        };
     });
-
 })();
