@@ -59,14 +59,19 @@ app.post('/api/message', upload.single('image'), async (req, res) => {
 
     // 檢查request中是否包含使用者的留言與檔案
     if (!req.file || !req.body.comment) {
-        return res.status(400).json({ error: true, message: 'Missing comment or image.' });
+        return res.status(400).json({ 'error': true, message: 'Missing comment or image.' });
     };
     const imageFile = req.file;
     const comment = req.body.comment;
     const imageFileName = fileNameGenerator.generateFileName(imageFileExt)
     
     // 上傳照片至S3
-    uploadResult = await s3FileUploader.uploadFileToS3(imageFile, imageFileName, imageFileExt)
+    uploadResult = await s3FileUploader.uploadFileToS3(imageFileName, imageFile).then((data) => {
+        console.log(data);
+    }).catch((data) =>{
+        console.log(data);
+        return res.status(500).json({'error': true, 'message': 'Fail to upload file to S3.'});
+    });
     imageFile.buffer = null; // 將圖檔從緩存中釋放
     if(uploadResult.error){
         return res.status(500).json(uploadResult);
