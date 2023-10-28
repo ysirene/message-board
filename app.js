@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 // 取得留言資料
 app.get('/api/message', async (req, res) => {
     const connection = await db.getConnection();
-    connection.query('SELECT comment, image_url FROM post ORDER BY id ASC', (error, results, fields) => {
+    connection.query('SELECT comment, image_name FROM post ORDER BY id ASC', (error, results, fields) => {
         connection.release();
         if(error){
             console.error(error);
@@ -71,7 +71,7 @@ app.post('/api/message', upload.single('file'), async (req, res) => {
 
     // 留言與圖檔名稱存入資料庫
     const connection = await db.getConnection();
-    connection.query('INSERT INTO POST(comment, image_url) VALUES(?, ?)', [comment, imageFileName], (error, results, fields) => {
+    connection.query('INSERT INTO POST(comment, image_name) VALUES(?, ?)', [comment, imageFileName], (error, results, fields) => {
         connection.release();
         if(error){
             console.error(error);
