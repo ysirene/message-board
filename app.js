@@ -55,7 +55,7 @@ app.get('/api/message', async (req, res) => {
 });
 
 // 新增留言
-app.post('/api/message', upload.single('file'), async (req, res) => {
+app.post('/api/message', upload.single('image'), async (req, res) => {
 
     // 檢查request中是否包含使用者的留言與檔案
     if (!req.file || !req.body.comment) {
