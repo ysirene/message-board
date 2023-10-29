@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 // 取得留言資料
 app.get('/api/message', async (req, res) => {
     const connection = await db.getConnection();
-    connection.query('SELECT comment, image_name FROM post ORDER BY id ASC', (error, results, fields) => {
+    connection.query('SELECT comment, image_name FROM post ORDER BY id DESC', (error, results, fields) => {
         connection.release();
         if(error){
             console.error(error);
@@ -86,7 +86,7 @@ app.post('/api/message', upload.single('image'), async (req, res) => {
                 console.error(err);
                 return res.status(500).json({'error': true, 'message': 'Database error'});
             }else{
-                return res.status(200).json({'ok': true});
+                return res.status(200).json({'ok': true, 'imageName': imageFileName, 'comment': comment});
             };
         });
     }

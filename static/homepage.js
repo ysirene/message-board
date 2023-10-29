@@ -10,6 +10,11 @@ function ajax(src, options){
     });
 };
 
+function cleanInput(){
+    let uploadValue = document.querySelector('#newMessage');
+    uploadValue.reset();
+};
+
 function addMessage(event){
     event.preventDefault();
     let newMessageFormData = new FormData(document.querySelector('#newMessage'));
@@ -20,7 +25,18 @@ function addMessage(event){
     };
     ajax(src, options).then((data) => {
         if(data.ok){
-            location.reload()
+            cleanInput();
+            let messageBoardElem = document.querySelector('#message_board');
+            let sectionTag = document.createElement('section');
+            let messageDiv = document.createElement('div');
+            let img = document.createElement('img');
+            let divider = document.createElement('hr');
+            messageDiv.textContent = data['comment'];
+            img.setAttribute('src', 'https://d2te9nmcgn9qhu.cloudfront.net/' + data['imageName']);
+            sectionTag.appendChild(messageDiv);
+            sectionTag.appendChild(img);
+            messageBoardElem.insertBefore(sectionTag, messageBoardElem.firstChild);
+            messageBoardElem.insertBefore(divider, messageBoardElem.firstChild);
         }else{
             console.log(data)
         };
